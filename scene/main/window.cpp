@@ -40,6 +40,7 @@ STATIC_ASSERT_INCOMPLETE_TYPE(class, RenderingServer);
 #include "core/object/class_db.h"
 #include "core/os/os.h"
 #include "scene/gui/control.h"
+#include "scene/main/canvas_layer.h"
 #include "scene/main/scene_tree.h"
 #include "scene/theme/theme_db.h"
 #include "scene/theme/theme_owner.h"
@@ -542,6 +543,8 @@ void Window::set_mode(Mode p_mode) {
 	} else if (window_id != DisplayServerEnums::INVALID_WINDOW_ID) {
 		DisplayServer::get_singleton()->window_set_mode(DisplayServerEnums::WindowMode(p_mode), window_id);
 	}
+
+	_update_caption_overlay();
 }
 
 Window::Mode Window::get_mode() const {
@@ -552,6 +555,83 @@ Window::Mode Window::get_mode() const {
 	return mode;
 }
 
+static bool _needs_caption_overlay() {
+	// Create an engine-drawn overlay on platforms that support FEATURE_EXTEND_TO_TITLE
+	// but do not render native caption buttons (currently Windows only).
+	return OS::get_singleton()->get_name() == "Windows" &&
+			DisplayServer::get_singleton()->has_feature(DisplayServerEnums::FEATURE_EXTEND_TO_TITLE);
+}
+
+void Window::_create_caption_overlay() {
+	if (caption_overlay) {
+		return; // Already exists.
+	}
+
+	// Use a high CanvasLayer so the buttons render above all game content,
+	// including any CanvasLayers the developer has added.
+	caption_canvas_layer = memnew(CanvasLayer);
+	caption_canvas_layer->set_layer(4096);
+	add_child(caption_canvas_layer, false, Node::INTERNAL_MODE_BACK);
+
+	caption_overlay = memnew(CaptionButtonOverlay);
+	caption_canvas_layer->add_child(caption_overlay);
+
+	// Connect button signals.
+	caption_overlay->connect(SNAME("close_pressed"), callable_mp(this, &Window::_caption_close_pressed));
+	caption_overlay->connect(SNAME("minimize_pressed"), callable_mp(this, &Window::_caption_minimize_pressed));
+	caption_overlay->connect(SNAME("maximize_pressed"), callable_mp(this, &Window::_caption_maximize_pressed));
+
+	_update_caption_overlay();
+}
+
+void Window::_destroy_caption_overlay() {
+	if (!caption_overlay) {
+		return;
+	}
+	caption_overlay->queue_free();
+	caption_overlay = nullptr;
+	caption_canvas_layer->queue_free();
+	caption_canvas_layer = nullptr;
+}
+
+void Window::_update_caption_overlay() {
+	if (!caption_overlay) {
+		return;
+	}
+
+	// Sync disabled state with window flags.
+	caption_overlay->set_minimize_disabled(get_flag(FLAG_MINIMIZE_DISABLED));
+	caption_overlay->set_maximize_disabled(get_flag(FLAG_MAXIMIZE_DISABLED));
+	caption_overlay->set_window_maximized(get_mode() == MODE_MAXIMIZED);
+
+	// Use window_get_safe_title_margins as the authoritative DPI-scaled size.
+	// x = left cluster width (RTL), y = right cluster width (LTR), z = height
+	Vector3i margins = DisplayServer::get_singleton()->window_get_safe_title_margins(get_window_id());
+	bool rtl = is_layout_rtl();
+	int w = rtl ? margins.x : margins.y;
+	int h = margins.z;
+	caption_overlay->set_size(Size2(w, h));
+
+	if (rtl) {
+		caption_overlay->set_position(Vector2(0, 0));
+	} else {
+		caption_overlay->set_position(Vector2(get_size().x - w, 0));
+	}
+}
+
+void Window::_caption_close_pressed() {
+	_propagate_window_notification(this, NOTIFICATION_WM_CLOSE_REQUEST);
+	emit_signal(SNAME("close_requested"));
+}
+
+void Window::_caption_minimize_pressed() {
+	set_mode(MODE_MINIMIZED);
+}
+
+void Window::_caption_maximize_pressed() {
+	set_mode(mode == MODE_MAXIMIZED ? MODE_WINDOWED : MODE_MAXIMIZED);
+}
+
 void Window::set_flag(Flags p_flag, bool p_enabled) {
 	ERR_MAIN_THREAD_GUARD;
 	ERR_FAIL_INDEX(p_flag, FLAG_MAX);
@@ -559,6 +639,18 @@ void Window::set_flag(Flags p_flag, bool p_enabled) {
 
 	if (p_flag == FLAG_TRANSPARENT) {
 		set_transparent_background(p_enabled);
+	}
+
+	if (p_flag == FLAG_EXTEND_TO_TITLE && _needs_caption_overlay()) {
+		if (p_enabled) {
+			_create_caption_overlay();
+		} else {
+			_destroy_caption_overlay();
+		}
+	}
+
+	if (p_flag == FLAG_MINIMIZE_DISABLED || p_flag == FLAG_MAXIMIZE_DISABLED) {
+		_update_caption_overlay();
 	}
 
 	if (embedder) {
@@ -916,10 +1008,12 @@ void Window::_event_callback(DisplayServerEnums::WindowEvent p_event) {
 		} break;
 		case DisplayServerEnums::WINDOW_EVENT_DPI_CHANGE: {
 			_update_viewport_size();
+			_update_caption_overlay();
 			_propagate_window_notification(this, NOTIFICATION_WM_DPI_CHANGE);
 			emit_signal(SNAME("dpi_changed"));
 		} break;
 		case DisplayServerEnums::WINDOW_EVENT_TITLEBAR_CHANGE: {
+			_update_caption_overlay();
 			emit_signal(SNAME("titlebar_changed"));
 		} break;
 		case DisplayServerEnums::WINDOW_EVENT_FORCE_CLOSE: {
@@ -1444,6 +1538,8 @@ void Window::_update_viewport_size() {
 		RS::get_singleton()->viewport_set_size(get_viewport_rid(), s.width, s.height, 1);
 		embedder->_sub_window_update(this);
 	}
+
+	_update_caption_overlay();
 }
 
 void Window::_update_window_callbacks() {
@@ -1730,6 +1826,11 @@ void Window::_notification(int p_what) {
 
 			// Emits NOTIFICATION_THEME_CHANGED internally.
 			set_theme_context(ThemeDB::get_singleton()->get_nearest_theme_context(this));
+
+			// If extend_to_title was set before entering the tree, create the overlay now.
+			if (flags[FLAG_EXTEND_TO_TITLE] && _needs_caption_overlay()) {
+				_create_caption_overlay();
+			}
 		} break;
 
 		case NOTIFICATION_READY: {
@@ -1761,6 +1862,8 @@ void Window::_notification(int p_what) {
 		} break;
 
 		case NOTIFICATION_EXIT_TREE: {
+			_destroy_caption_overlay();
+
 			if (ProjectSettings::get_singleton()->is_connected("settings_changed", callable_mp(this, &Window::_settings_changed))) {
 				ProjectSettings::get_singleton()->disconnect("settings_changed", callable_mp(this, &Window::_settings_changed));
 			}
