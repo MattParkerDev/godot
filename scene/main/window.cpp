@@ -575,10 +575,11 @@ static bool _needs_caption_overlay() {
 }
 
 void Window::_update_caption_overlay_existence() {
+	Mode current_mode = get_mode();
 	bool should_exist = flags[FLAG_EXTEND_TO_TITLE] &&
 			!flags[FLAG_BORDERLESS] &&
-			mode != MODE_FULLSCREEN &&
-			mode != MODE_EXCLUSIVE_FULLSCREEN &&
+			current_mode != MODE_FULLSCREEN &&
+			current_mode != MODE_EXCLUSIVE_FULLSCREEN &&
 			_needs_caption_overlay();
 	if (should_exist && !caption_overlay) {
 		_create_caption_overlay();
@@ -676,10 +677,6 @@ void Window::set_flag(Flags p_flag, bool p_enabled) {
 		set_transparent_background(p_enabled);
 	}
 
-	if (p_flag == FLAG_EXTEND_TO_TITLE || p_flag == FLAG_BORDERLESS) {
-		_update_caption_overlay_existence();
-	}
-
 	if (p_flag == FLAG_MINIMIZE_DISABLED || p_flag == FLAG_MAXIMIZE_DISABLED) {
 		_update_caption_overlay();
 	}
@@ -690,6 +687,10 @@ void Window::set_flag(Flags p_flag, bool p_enabled) {
 		if (!is_in_edited_scene_root()) {
 			DisplayServer::get_singleton()->window_set_flag(DisplayServerEnums::WindowFlags(p_flag), p_enabled, window_id);
 		}
+	}
+
+	if (p_flag == FLAG_EXTEND_TO_TITLE || p_flag == FLAG_BORDERLESS) {
+		_update_caption_overlay_existence();
 	}
 }
 
@@ -1050,6 +1051,7 @@ void Window::_event_callback(DisplayServerEnums::WindowEvent p_event) {
 			emit_signal(SNAME("dpi_changed"));
 		} break;
 		case DisplayServerEnums::WINDOW_EVENT_TITLEBAR_CHANGE: {
+			_update_caption_overlay_existence();
 			_update_caption_overlay();
 			emit_signal(SNAME("titlebar_changed"));
 		} break;

@@ -2981,6 +2981,10 @@ void DisplayServerWindows::window_set_mode(DisplayServerEnums::WindowMode p_mode
 		}
 	}
 	_update_window_mouse_passthrough(p_window);
+
+	if (wd.fullscreen != was_fullscreen) {
+		_send_window_event(wd, DisplayServerEnums::WINDOW_EVENT_TITLEBAR_CHANGE);
+	}
 }
 
 DisplayServerEnums::WindowMode DisplayServerWindows::window_get_mode(DisplayServerEnums::WindowID p_window) const {
