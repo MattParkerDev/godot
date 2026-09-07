@@ -100,7 +100,7 @@ void CaptionButtonOverlay::_draw_icon_minimize(const Rect2 &p_rect, const Color 
 	float cx = p_rect.get_center().x;
 	float cy = p_rect.get_center().y;
 	float half = 5.0f * scale;
-	bool antiAliased = std::abs(scale - std::round(scale)) > 1e-6f;
+	bool anti_aliased = Math::abs(scale - Math::round(scale)) > 1e-6f;
 	draw_line(Vector2(cx - half, cy), Vector2(cx + half, cy), p_color, scale, antiAliased);
 }
 
@@ -195,7 +195,7 @@ void CaptionButtonOverlay::set_maximize_disabled(bool p_disabled) {
 void CaptionButtonOverlay::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_DRAW: {
-			// Background colour for hovered / pressed button
+			// Background color for hovered / pressed button.
 			const Color close_hover_bg(0.769f, 0.169f, 0.110f, 1.0f); // Windows 11 red
 			const Color normal_hover_bg(1.0f, 1.0f, 1.0f, 0.08f);
 			const Color normal_press_bg(1.0f, 1.0f, 1.0f, 0.04f);
@@ -220,7 +220,7 @@ void CaptionButtonOverlay::_notification(int p_what) {
 			// Close: white when hovered (always full opacity); otherwise dimmed when unfocused.
 			Color close_color = (hover_zone == ZONE_CLOSE)
 					? Color(1, 1, 1)
-					: Color(icon_color.r, icon_color.g, icon_color.b, icon_color.a * icon_alpha(ZONE_CLOSE));
+					: Color(icon_color, icon_color.a * icon_alpha(ZONE_CLOSE));
 			_draw_icon_close(_zone_rect(ZONE_CLOSE), close_color);
 
 			Color min_color = minimize_disabled ? disabled_color : icon_color;

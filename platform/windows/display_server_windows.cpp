@@ -2326,9 +2326,7 @@ void DisplayServerWindows::window_set_window_buttons_offset(const Vector2i &p_of
 	}
 	UINT dpi = GetDpiForWindow(wd.hWnd);
 	float scale = (float)dpi / 96.0f;
-	Vector2i offset(
-			(int)Math::round((float)p_offset.x / scale),
-			(int)Math::round((float)p_offset.y / scale));
+	Vector2i offset = (Vector2(p_offset) / scale).round();
 	if (wd.caption_buttons_offset == offset) {
 		return;
 	}

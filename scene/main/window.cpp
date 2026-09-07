@@ -594,7 +594,7 @@ void Window::_create_caption_overlay() {
 	}
 
 	// Use a high CanvasLayer so the buttons render above all game content,
-	// including any CanvasLayers the developer has added.
+	// including any CanvasLayers the user has added.
 	caption_canvas_layer = memnew(CanvasLayer);
 	caption_canvas_layer->set_layer(4096);
 	add_child(caption_canvas_layer, false, Node::INTERNAL_MODE_BACK);
