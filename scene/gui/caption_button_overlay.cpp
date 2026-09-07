@@ -213,22 +213,20 @@ void CaptionButtonOverlay::_notification(int p_what) {
 			Color disabled_color = icon_color * Color(1, 1, 1, 0.35f);
 
 			// When unfocused, dim icons that are not currently hovered.
-			auto icon_alpha = [&](ButtonZone p_zone) -> float {
-				return (!window_focused && hover_zone != p_zone) ? 0.4f : 1.0f;
-			};
+			const float focus_alpha_modifier = window_focused ? 1.0f : 0.4f;
 
 			// Close: white when hovered (always full opacity); otherwise dimmed when unfocused.
 			Color close_color = (hover_zone == ZONE_CLOSE)
 					? Color(1, 1, 1)
-					: Color(icon_color, icon_color.a * icon_alpha(ZONE_CLOSE));
+					: Color(icon_color, icon_color.a * focus_alpha_modifier);
 			_draw_icon_close(_zone_rect(ZONE_CLOSE), close_color);
 
 			Color min_color = minimize_disabled ? disabled_color : icon_color;
-			min_color.a *= icon_alpha(ZONE_MINIMIZE);
+			min_color.a *= hover_zone == ZONE_MINIMIZE ? 1.0f : focus_alpha_modifier;
 			_draw_icon_minimize(_zone_rect(ZONE_MINIMIZE), min_color);
 
 			Color max_color = maximize_disabled ? disabled_color : icon_color;
-			max_color.a *= icon_alpha(ZONE_MAXIMIZE);
+			max_color.a *= hover_zone == ZONE_MAXIMIZE ? 1.0f : focus_alpha_modifier;
 			if (window_maximized) {
 				_draw_icon_restore(_zone_rect(ZONE_MAXIMIZE), max_color);
 			} else {
