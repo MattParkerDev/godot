@@ -59,7 +59,7 @@ private:
 	ButtonZone hover_zone = ZONE_NONE;
 	bool pressing = false;
 
-	// Returns the local-space rect for a given zone, taking RTL into account.
+	// Returns the local-space rect for a given zone.
 	Rect2 _zone_rect(ButtonZone p_zone) const;
 	ButtonZone _zone_at(const Vector2 &p_pos) const;
 

@@ -37,56 +37,20 @@
 
 // -- Geometry helpers ------------------------------------------------
 
-// Maps logical zone indices to left-to-right column order.
-// LTR: minimize(0), maximize(1), close(2)
-// RTL: close(0),    maximize(1), minimize(2)  — cluster moves to top-left
-static CaptionButtonOverlay::ButtonZone _ltr_zone(int p_col, bool p_rtl) {
-	if (p_rtl) {
-		// Columns are: 0=close, 1=maximize, 2=minimize
-		switch (p_col) {
-			case 0:
-				return CaptionButtonOverlay::ZONE_CLOSE;
-			case 1:
-				return CaptionButtonOverlay::ZONE_MAXIMIZE;
-			default:
-				return CaptionButtonOverlay::ZONE_MINIMIZE;
-		}
-	} else {
-		return (CaptionButtonOverlay::ButtonZone)p_col;
-	}
-}
-
 Rect2 CaptionButtonOverlay::_zone_rect(ButtonZone p_zone) const {
-	bool rtl = false;
-	int col = 0;
-	if (rtl) {
-		switch (p_zone) {
-			case ZONE_CLOSE:
-				col = 0;
-				break;
-			case ZONE_MAXIMIZE:
-				col = 1;
-				break;
-			default:
-				col = 2;
-				break;
-		}
-	} else {
-		col = (int)p_zone;
-	}
+	int col = (int)p_zone;
 	float bw = get_size().x / 3.0f;
 	float bh = get_size().y;
 	return Rect2(col * bw, 0, bw, bh);
 }
 
 CaptionButtonOverlay::ButtonZone CaptionButtonOverlay::_zone_at(const Vector2 &p_pos) const {
-	bool rtl = false;
 	float bw = get_size().x / 3.0f;
 	float bh = get_size().y;
 	for (int col = 0; col < 3; col++) {
 		Rect2 r(col * bw, 0, bw, bh);
 		if (r.has_point(p_pos)) {
-			return _ltr_zone(col, rtl);
+			return (ButtonZone)col;
 		}
 	}
 	return ZONE_NONE;

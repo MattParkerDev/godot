@@ -637,10 +637,9 @@ void Window::_update_caption_overlay() {
 	}
 
 	// Use window_get_safe_title_margins as the authoritative DPI-scaled size.
-	// x = left cluster width (RTL), y = right cluster width (LTR), z = height
+	// y = right cluster width, z = height.
 	Vector3i margins = DisplayServer::get_singleton()->window_get_safe_title_margins(window_id);
-	bool rtl = false;
-	int w = rtl ? margins.x : margins.y;
+	int w = margins.y;
 	int h = margins.z;
 
 	// Keep the caption overlay in native window coordinates, independently of
@@ -648,11 +647,7 @@ void Window::_update_caption_overlay() {
 	caption_canvas_layer->set_transform(get_final_transform().affine_inverse());
 	caption_overlay->set_size(Size2(w, h));
 
-	if (rtl) {
-		caption_overlay->set_position(Vector2(0, 0));
-	} else {
-		caption_overlay->set_position(Vector2(get_size().x - w, 0));
-	}
+	caption_overlay->set_position(Vector2(get_size().x - w, 0));
 }
 
 void Window::_caption_close_pressed() {
