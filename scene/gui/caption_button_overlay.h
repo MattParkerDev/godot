@@ -49,7 +49,7 @@ public:
 private:
 	// DPI scale factor cached from the last NOTIFICATION_WM_DPI_CHANGE (1.0 = 96 DPI).
 	// Icon geometry is authored at 96 DPI (10 × 10 px) and multiplied by this value.
-	float _dpi_scale = 1.0f;
+	float dpi_scale = 1.0f;
 
 	bool window_focused = true;
 	bool window_maximized = false;

@@ -2510,9 +2510,9 @@ void DisplayServerWindows::window_set_position(const Point2i &p_position, Displa
 	// AdjustWindowRectEx would incorrectly add space for the title bar and borders to the window, whose non-client area is removed.
 	if (!wd.extend_to_title) {
 		const DWORD style = GetWindowLongPtr(wd.hWnd, GWL_STYLE);
-		const DWORD exStyle = GetWindowLongPtr(wd.hWnd, GWL_EXSTYLE);
+		const DWORD ex_style = GetWindowLongPtr(wd.hWnd, GWL_EXSTYLE);
 
-		AdjustWindowRectEx(&rc, style, false, exStyle);
+		AdjustWindowRectEx(&rc, style, false, ex_style);
 	}
 	MoveWindow(wd.hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
 

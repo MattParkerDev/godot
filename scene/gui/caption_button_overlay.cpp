@@ -40,10 +40,10 @@
 // Maps logical zone indices to left-to-right column order.
 // LTR: minimize(0), maximize(1), close(2)
 // RTL: close(0),    maximize(1), minimize(2)  — cluster moves to top-left
-static CaptionButtonOverlay::ButtonZone _ltr_zone(int col, bool rtl) {
-	if (rtl) {
+static CaptionButtonOverlay::ButtonZone _ltr_zone(int p_col, bool p_rtl) {
+	if (p_rtl) {
 		// Columns are: 0=close, 1=maximize, 2=minimize
-		switch (col) {
+		switch (p_col) {
 			case 0:
 				return CaptionButtonOverlay::ZONE_CLOSE;
 			case 1:
@@ -52,7 +52,7 @@ static CaptionButtonOverlay::ButtonZone _ltr_zone(int col, bool rtl) {
 				return CaptionButtonOverlay::ZONE_MINIMIZE;
 		}
 	} else {
-		return (CaptionButtonOverlay::ButtonZone)col;
+		return (CaptionButtonOverlay::ButtonZone)p_col;
 	}
 }
 
@@ -96,38 +96,38 @@ CaptionButtonOverlay::ButtonZone CaptionButtonOverlay::_zone_at(const Vector2 &p
 
 void CaptionButtonOverlay::_draw_icon_minimize(const Rect2 &p_rect, const Color &p_color) {
 	// Horizontal line at vertical center.
-	float scale = _dpi_scale;
+	float scale = dpi_scale;
 	float cx = p_rect.get_center().x;
 	float cy = p_rect.get_center().y;
 	float half = 5.0f * scale;
 	bool anti_aliased = Math::abs(scale - Math::round(scale)) > 1e-6f;
-	draw_line(Vector2(cx - half, cy), Vector2(cx + half, cy), p_color, scale, antiAliased);
+	draw_line(Vector2(cx - half, cy), Vector2(cx + half, cy), p_color, scale, anti_aliased);
 }
 
 void CaptionButtonOverlay::_draw_icon_maximize(const Rect2 &p_rect, const Color &p_color) {
 	// Square outline centered in the button.
-	float scale = _dpi_scale;
+	float scale = dpi_scale;
 	float cx = p_rect.get_center().x;
 	float cy = p_rect.get_center().y;
 	float half = 4.5f * scale;
-	bool antiAliased = std::abs(scale - std::round(scale)) > 1e-6f;
+	bool anti_aliased = Math::abs(scale - Math::round(scale)) > 1e-6f;
 	Rect2 sq(cx - half, cy - half, half * 2.0f, half * 2.0f);
-	draw_rect(sq, p_color, false, scale, antiAliased);
+	draw_rect(sq, p_color, false, scale, anti_aliased);
 }
 
 void CaptionButtonOverlay::_draw_icon_restore(const Rect2 &p_rect, const Color &p_color) {
 	// Two overlapping square outlines — front (bottom-left, full) and back (top-right, L-shaped).
-	float scale = _dpi_scale;
+	float scale = dpi_scale;
 	float cx = p_rect.get_center().x;
 	float cy = p_rect.get_center().y;
 	float sz = 7.0f * scale;
 	float offset = 2.0f * scale;
 
-	bool antiAliased = std::abs(scale - std::round(scale)) > 1e-6f;
+	bool anti_aliased = Math::abs(scale - Math::round(scale)) > 1e-6f;
 
 	// Front square — shifted down by half the offset so the combined icon is vertically centered.
 	Rect2 front(cx - sz * 0.5f, cy - sz * 0.5f + offset * 0.5f, sz, sz);
-	draw_rect(front, p_color, false, scale, antiAliased);
+	draw_rect(front, p_color, false, scale, anti_aliased);
 
 	// Back square — derived directly from front (off px right, off px up).
 	Rect2 back(front.position + Vector2(offset, -offset), Size2(sz, sz));
@@ -137,16 +137,16 @@ void CaptionButtonOverlay::_draw_icon_restore(const Rect2 &p_rect, const Color &
 	float by = back.position.y;
 
 	// Top edge — stop short of the corner by radius.
-	draw_line(Point2(bx, by), Point2(bx + sz - r, by), p_color, scale, antiAliased);
+	draw_line(Point2(bx, by), Point2(bx + sz - r, by), p_color, scale, anti_aliased);
 	// Right edge — start below the corner by radius.
-	draw_line(Point2(bx + sz, by + r), Point2(bx + sz, by + sz), p_color, scale, antiAliased);
+	draw_line(Point2(bx + sz, by + r), Point2(bx + sz, by + sz), p_color, scale, anti_aliased);
 	// Quarter-circle arc joining them at the top-right corner.
-	draw_arc(Vector2(bx + sz - r, by + r), r, -Math::PI * 0.5f, 0.0f, 4, p_color, scale, antiAliased);
+	draw_arc(Vector2(bx + sz - r, by + r), r, -Math::PI * 0.5f, 0.0f, 4, p_color, scale, anti_aliased);
 }
 
 void CaptionButtonOverlay::_draw_icon_close(const Rect2 &p_rect, const Color &p_color) {
 	// × — two diagonal lines.
-	float scale = _dpi_scale;
+	float scale = dpi_scale;
 	float cx = p_rect.get_center().x;
 	float cy = p_rect.get_center().y;
 	float half = 5.0f * scale;
@@ -243,7 +243,7 @@ void CaptionButtonOverlay::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_WM_DPI_CHANGE: {
-			_dpi_scale = DisplayServer::get_singleton()->screen_get_dpi(get_window()->get_current_screen()) / 96.0f;
+			dpi_scale = DisplayServer::get_singleton()->screen_get_dpi(get_window()->get_current_screen()) / 96.0f;
 			queue_redraw();
 		} break;
 	}
