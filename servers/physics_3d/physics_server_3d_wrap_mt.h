@@ -401,6 +401,8 @@ public:
 
 	FUNC1RC(float, generic_6dof_joint_get_applied_force, RID)
 	FUNC1RC(float, generic_6dof_joint_get_applied_torque, RID)
+	FUNC1RC(Vector3, generic_6dof_joint_get_applied_force_vector, RID)
+	FUNC1RC(Vector3, generic_6dof_joint_get_applied_torque_vector, RID)
 
 	FUNC1RC(JointType, joint_get_type, RID);
 

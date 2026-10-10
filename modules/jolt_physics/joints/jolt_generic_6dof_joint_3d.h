@@ -119,6 +119,8 @@ public:
 
 	float get_applied_force() const;
 	float get_applied_torque() const;
+	Vector3 get_applied_force_vector() const;
+	Vector3 get_applied_torque_vector() const;
 
 	virtual void rebuild() override;
 };

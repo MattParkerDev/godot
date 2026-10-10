@@ -648,6 +648,54 @@ float JoltGeneric6DOFJoint3D::get_applied_torque() const {
 	return total_lambda.Length() / last_step;
 }
 
+Vector3 JoltGeneric6DOFJoint3D::get_applied_force_vector() const {
+	JPH::SixDOFConstraint *constraint = static_cast<JPH::SixDOFConstraint *>(jolt_ref.GetPtr());
+	ERR_FAIL_NULL_V(constraint, Vector3());
+
+	JoltSpace3D *space = get_space();
+	ERR_FAIL_NULL_V(space, Vector3());
+
+	const float last_step = space->get_last_step();
+	if (unlikely(last_step == 0.0f)) {
+		return Vector3();
+	}
+
+	typedef JPH::SixDOFConstraint::EAxis EAxis;
+
+	// Mirrors `SixDOFConstraint::IsTranslationFullyConstrained`, which decides what the lambda holds.
+	const bool fully_constrained = constraint->IsFixedAxis(EAxis::TranslationX) && constraint->IsFixedAxis(EAxis::TranslationY) && constraint->IsFixedAxis(EAxis::TranslationZ) && constraint->GetLimitsSpringSettings(EAxis::TranslationX).mFrequency <= 0.0f && constraint->GetLimitsSpringSettings(EAxis::TranslationY).mFrequency <= 0.0f && constraint->GetLimitsSpringSettings(EAxis::TranslationZ).mFrequency <= 0.0f;
+
+	// Motor and per-axis limit lambdas are along the joint's axes on body A.
+	const JPH::Quat constraint_to_world = constraint->GetBody1()->GetRotation() * constraint->GetConstraintToBody1Matrix().GetQuaternion();
+	const JPH::Vec3 motor_lambda = constraint_to_world * constraint->GetTotalLambdaMotorTranslation();
+	const JPH::Vec3 lambda = fully_constrained ? constraint->GetTotalLambdaPosition() : constraint_to_world * constraint->GetTotalLambdaPosition();
+
+	return to_godot(lambda + motor_lambda) / last_step;
+}
+
+Vector3 JoltGeneric6DOFJoint3D::get_applied_torque_vector() const {
+	JPH::SixDOFConstraint *constraint = static_cast<JPH::SixDOFConstraint *>(jolt_ref.GetPtr());
+	ERR_FAIL_NULL_V(constraint, Vector3());
+
+	JoltSpace3D *space = get_space();
+	ERR_FAIL_NULL_V(space, Vector3());
+
+	const float last_step = space->get_last_step();
+	if (unlikely(last_step == 0.0f)) {
+		return Vector3();
+	}
+
+	typedef JPH::SixDOFConstraint::EAxis EAxis;
+
+	// With any angular axis not locked the lambdas are about swing and twist limit axes that Jolt does not expose.
+	if (!constraint->IsFixedAxis(EAxis::RotationX) || !constraint->IsFixedAxis(EAxis::RotationY) || !constraint->IsFixedAxis(EAxis::RotationZ)) {
+		WARN_PRINT_ONCE("The applied torque vector of a Generic6DOFJoint3D is only available when all three of its angular axes are locked.");
+		return Vector3();
+	}
+
+	return to_godot(constraint->GetTotalLambdaRotation()) / last_step;
+}
+
 void JoltGeneric6DOFJoint3D::rebuild() {
 	destroy();
 

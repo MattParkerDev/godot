@@ -1665,6 +1665,26 @@ float JoltPhysicsServer3D::generic_6dof_joint_get_applied_torque(RID p_joint) co
 	return g6dof_joint->get_applied_torque();
 }
 
+Vector3 JoltPhysicsServer3D::generic_6dof_joint_get_applied_force_vector(RID p_joint) const {
+	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_V(joint, Vector3());
+
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_6DOF, Vector3());
+	JoltGeneric6DOFJoint3D *g6dof_joint = static_cast<JoltGeneric6DOFJoint3D *>(joint);
+
+	return g6dof_joint->get_applied_force_vector();
+}
+
+Vector3 JoltPhysicsServer3D::generic_6dof_joint_get_applied_torque_vector(RID p_joint) const {
+	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
+	ERR_FAIL_NULL_V(joint, Vector3());
+
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_6DOF, Vector3());
+	JoltGeneric6DOFJoint3D *g6dof_joint = static_cast<JoltGeneric6DOFJoint3D *>(joint);
+
+	return g6dof_joint->get_applied_torque_vector();
+}
+
 PhysicsServer3D::JointType JoltPhysicsServer3D::joint_get_type(RID p_joint) const {
 	const JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, JOINT_TYPE_PIN);

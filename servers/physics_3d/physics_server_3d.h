@@ -809,6 +809,8 @@ public:
 
 	virtual float generic_6dof_joint_get_applied_force(RID p_joint) const = 0;
 	virtual float generic_6dof_joint_get_applied_torque(RID p_joint) const = 0;
+	virtual Vector3 generic_6dof_joint_get_applied_force_vector(RID p_joint) const = 0;
+	virtual Vector3 generic_6dof_joint_get_applied_torque_vector(RID p_joint) const = 0;
 
 	/* QUERY API */
 

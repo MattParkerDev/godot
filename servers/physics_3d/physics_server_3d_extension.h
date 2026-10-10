@@ -540,6 +540,8 @@ public:
 
 	EXBIND1RC(float, generic_6dof_joint_get_applied_force, RID)
 	EXBIND1RC(float, generic_6dof_joint_get_applied_torque, RID)
+	EXBIND1RC(Vector3, generic_6dof_joint_get_applied_force_vector, RID)
+	EXBIND1RC(Vector3, generic_6dof_joint_get_applied_torque_vector, RID)
 
 	EXBIND1RC(JointType, joint_get_type, RID)
 

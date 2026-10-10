@@ -1063,6 +1063,8 @@ void PhysicsServer3D::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("generic_6dof_joint_get_applied_force", "joint"), &PhysicsServer3D::generic_6dof_joint_get_applied_force);
 	ClassDB::bind_method(D_METHOD("generic_6dof_joint_get_applied_torque", "joint"), &PhysicsServer3D::generic_6dof_joint_get_applied_torque);
+	ClassDB::bind_method(D_METHOD("generic_6dof_joint_get_applied_force_vector", "joint"), &PhysicsServer3D::generic_6dof_joint_get_applied_force_vector);
+	ClassDB::bind_method(D_METHOD("generic_6dof_joint_get_applied_torque_vector", "joint"), &PhysicsServer3D::generic_6dof_joint_get_applied_torque_vector);
 
 	ClassDB::bind_method(D_METHOD("free_rid", "rid"), &PhysicsServer3D::free_rid);
 

@@ -791,12 +791,28 @@
 				[b]Note:[/b] Only supported when using Jolt Physics.
 			</description>
 		</method>
+		<method name="generic_6dof_joint_get_applied_force_vector" qualifiers="const">
+			<return type="Vector3" />
+			<param index="0" name="joint" type="RID" />
+			<description>
+				Returns the force this joint applied to body B at the joint's position during the last physics step, in global space. Body A received the opposite force. Its length equals [method generic_6dof_joint_get_applied_force]. Returns [constant Vector3.ZERO] if the joint is not yet connected to two bodies.
+				[b]Note:[/b] Only supported when using Jolt Physics.
+			</description>
+		</method>
 		<method name="generic_6dof_joint_get_applied_torque" qualifiers="const">
 			<return type="float" />
 			<param index="0" name="joint" type="RID" />
 			<description>
 				Returns the magnitude of the torque applied to satisfy this joint. Returns [code]0.0[/code] if the joint is not yet connected to two bodies.
 				[b]Note:[/b] Only supported when using Jolt Physics.
+			</description>
+		</method>
+		<method name="generic_6dof_joint_get_applied_torque_vector" qualifiers="const">
+			<return type="Vector3" />
+			<param index="0" name="joint" type="RID" />
+			<description>
+				Returns the torque this joint applied to body B during the last physics step, in global space. Body A received the opposite torque. This does not include the moment of [method generic_6dof_joint_get_applied_force_vector] about either body's center of mass. Returns [constant Vector3.ZERO] if the joint is not yet connected to two bodies.
+				[b]Note:[/b] Only supported when using Jolt Physics, and only when all three angular axes of the joint are locked. Otherwise this returns [constant Vector3.ZERO].
 			</description>
 		</method>
 		<method name="generic_6dof_joint_get_flag" qualifiers="const">

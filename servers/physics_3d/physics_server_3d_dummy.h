@@ -438,6 +438,8 @@ public:
 
 	virtual float generic_6dof_joint_get_applied_force(RID p_joint) const override { return 0.0f; }
 	virtual float generic_6dof_joint_get_applied_torque(RID p_joint) const override { return 0.0f; }
+	virtual Vector3 generic_6dof_joint_get_applied_force_vector(RID p_joint) const override { return Vector3(); }
+	virtual Vector3 generic_6dof_joint_get_applied_torque_vector(RID p_joint) const override { return Vector3(); }
 
 	/* MISC */
 

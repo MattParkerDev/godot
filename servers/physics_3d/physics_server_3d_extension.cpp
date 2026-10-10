@@ -435,6 +435,8 @@ void PhysicsServer3DExtension::_bind_methods() {
 
 	GDVIRTUAL_BIND(_generic_6dof_joint_get_applied_force, "joint");
 	GDVIRTUAL_BIND(_generic_6dof_joint_get_applied_torque, "joint");
+	GDVIRTUAL_BIND(_generic_6dof_joint_get_applied_force_vector, "joint");
+	GDVIRTUAL_BIND(_generic_6dof_joint_get_applied_torque_vector, "joint");
 
 	GDVIRTUAL_BIND(_joint_get_type, "joint");
 

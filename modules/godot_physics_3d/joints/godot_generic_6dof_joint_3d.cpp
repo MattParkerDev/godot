@@ -683,3 +683,13 @@ float GodotGeneric6DOFJoint3D::get_applied_torque() const {
 	WARN_PRINT_ONCE("Applied torque for Generic6DOFJoint3D is only supported by Jolt Physics. This will always return 0 with GodotPhysics3D.");
 	return 0.0f;
 }
+
+Vector3 GodotGeneric6DOFJoint3D::get_applied_force_vector() const {
+	WARN_PRINT_ONCE("Applied force for Generic6DOFJoint3D is only supported by Jolt Physics. This will always return a zero vector with GodotPhysics3D.");
+	return Vector3();
+}
+
+Vector3 GodotGeneric6DOFJoint3D::get_applied_torque_vector() const {
+	WARN_PRINT_ONCE("Applied torque for Generic6DOFJoint3D is only supported by Jolt Physics. This will always return a zero vector with GodotPhysics3D.");
+	return Vector3();
+}
