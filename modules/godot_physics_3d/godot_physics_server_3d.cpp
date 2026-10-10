@@ -1376,7 +1376,7 @@ Vector3 GodotPhysicsServer3D::pin_joint_get_local_b(RID p_joint) const {
 float GodotPhysicsServer3D::pin_joint_get_applied_force(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_PIN, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_PIN, 0.0f);
 	GodotPinJoint3D *pin_joint = static_cast<GodotPinJoint3D *>(joint);
 	return pin_joint->get_applied_force();
 }
@@ -1464,7 +1464,7 @@ bool GodotPhysicsServer3D::hinge_joint_get_flag(RID p_joint, HingeJointFlag p_fl
 float GodotPhysicsServer3D::hinge_joint_get_applied_force(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_HINGE, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_HINGE, 0.0f);
 	GodotHingeJoint3D *hinge_joint = static_cast<GodotHingeJoint3D *>(joint);
 	return hinge_joint->get_applied_force();
 }
@@ -1472,7 +1472,7 @@ float GodotPhysicsServer3D::hinge_joint_get_applied_force(RID p_joint) const {
 float GodotPhysicsServer3D::hinge_joint_get_applied_torque(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_HINGE, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_HINGE, 0.0f);
 	GodotHingeJoint3D *hinge_joint = static_cast<GodotHingeJoint3D *>(joint);
 	return hinge_joint->get_applied_torque();
 }
@@ -1565,7 +1565,7 @@ real_t GodotPhysicsServer3D::slider_joint_get_param(RID p_joint, SliderJointPara
 float GodotPhysicsServer3D::slider_joint_get_applied_force(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_SLIDER, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_SLIDER, 0.0f);
 	GodotSliderJoint3D *slider_joint = static_cast<GodotSliderJoint3D *>(joint);
 	return slider_joint->get_applied_force();
 }
@@ -1573,7 +1573,7 @@ float GodotPhysicsServer3D::slider_joint_get_applied_force(RID p_joint) const {
 float GodotPhysicsServer3D::slider_joint_get_applied_torque(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_SLIDER, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_SLIDER, 0.0f);
 	GodotSliderJoint3D *slider_joint = static_cast<GodotSliderJoint3D *>(joint);
 	return slider_joint->get_applied_torque();
 }
@@ -1621,7 +1621,7 @@ real_t GodotPhysicsServer3D::cone_twist_joint_get_param(RID p_joint, ConeTwistJo
 float GodotPhysicsServer3D::cone_twist_joint_get_applied_force(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_CONE_TWIST, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_CONE_TWIST, 0.0f);
 	GodotConeTwistJoint3D *cone_twist_joint = static_cast<GodotConeTwistJoint3D *>(joint);
 	return cone_twist_joint->get_applied_force();
 }
@@ -1629,7 +1629,7 @@ float GodotPhysicsServer3D::cone_twist_joint_get_applied_force(RID p_joint) cons
 float GodotPhysicsServer3D::cone_twist_joint_get_applied_torque(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_CONE_TWIST, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_CONE_TWIST, 0.0f);
 	GodotConeTwistJoint3D *cone_twist_joint = static_cast<GodotConeTwistJoint3D *>(joint);
 	return cone_twist_joint->get_applied_torque();
 }
@@ -1690,29 +1690,10 @@ bool GodotPhysicsServer3D::generic_6dof_joint_get_flag(RID p_joint, Vector3::Axi
 	return generic_6dof_joint->get_flag(p_axis, p_flag);
 }
 
-void GodotPhysicsServer3D::generic_6dof_joint_set_angular_target_rotation(RID p_joint, const Quaternion &p_target_rotation) {
-	ERR_FAIL_COND_MSG(!p_target_rotation.is_finite() || p_target_rotation.length_squared() <= CMP_EPSILON, "Angular target rotation must be a finite, non-zero quaternion.");
-
-	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL(joint);
-	ERR_FAIL_COND(joint->get_type() != PS3DE::JOINT_TYPE_6DOF);
-	WARN_PRINT_ONCE("Quaternion angular target rotations for Generic6DOFJoint3D are only supported by Jolt Physics. This value will be ignored by GodotPhysics3D.");
-}
-
-Quaternion GodotPhysicsServer3D::generic_6dof_joint_get_angular_target_rotation(RID p_joint) const {
-	const GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, Quaternion());
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_6DOF, Quaternion());
-
-	// GodotPhysics3D does not apply angular spring equilibrium points, so there is no body-space target to return.
-	WARN_PRINT_ONCE("Quaternion angular target rotations for Generic6DOFJoint3D are only supported by Jolt Physics. GodotPhysics3D returns the identity quaternion.");
-	return Quaternion();
-}
-
 float GodotPhysicsServer3D::generic_6dof_joint_get_applied_force(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_6DOF, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_6DOF, 0.0f);
 	GodotGeneric6DOFJoint3D *generic_6dof_joint = static_cast<GodotGeneric6DOFJoint3D *>(joint);
 	return generic_6dof_joint->get_applied_force();
 }
@@ -1720,7 +1701,7 @@ float GodotPhysicsServer3D::generic_6dof_joint_get_applied_force(RID p_joint) co
 float GodotPhysicsServer3D::generic_6dof_joint_get_applied_torque(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_6DOF, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_6DOF, 0.0f);
 	GodotGeneric6DOFJoint3D *generic_6dof_joint = static_cast<GodotGeneric6DOFJoint3D *>(joint);
 	return generic_6dof_joint->get_applied_torque();
 }
@@ -1728,7 +1709,7 @@ float GodotPhysicsServer3D::generic_6dof_joint_get_applied_torque(RID p_joint) c
 Vector3 GodotPhysicsServer3D::generic_6dof_joint_get_applied_force_vector(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, Vector3());
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_6DOF, Vector3());
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_6DOF, Vector3());
 	GodotGeneric6DOFJoint3D *generic_6dof_joint = static_cast<GodotGeneric6DOFJoint3D *>(joint);
 	return generic_6dof_joint->get_applied_force_vector();
 }
@@ -1736,7 +1717,7 @@ Vector3 GodotPhysicsServer3D::generic_6dof_joint_get_applied_force_vector(RID p_
 Vector3 GodotPhysicsServer3D::generic_6dof_joint_get_applied_torque_vector(RID p_joint) const {
 	GodotJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, Vector3());
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_6DOF, Vector3());
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_6DOF, Vector3());
 	GodotGeneric6DOFJoint3D *generic_6dof_joint = static_cast<GodotGeneric6DOFJoint3D *>(joint);
 	return generic_6dof_joint->get_applied_torque_vector();
 }

@@ -396,9 +396,6 @@ public:
 	FUNC4(generic_6dof_joint_set_flag, RID, Vector3::Axis, G6DOFJointAxisFlag, bool)
 	FUNC3RC(bool, generic_6dof_joint_get_flag, RID, Vector3::Axis, G6DOFJointAxisFlag)
 
-	FUNC2(generic_6dof_joint_set_angular_target_rotation, RID, const Quaternion &)
-	FUNC1RC(Quaternion, generic_6dof_joint_get_angular_target_rotation, RID)
-
 	FUNC1RC(float, generic_6dof_joint_get_applied_force, RID)
 	FUNC1RC(float, generic_6dof_joint_get_applied_torque, RID)
 	FUNC1RC(Vector3, generic_6dof_joint_get_applied_force_vector, RID)

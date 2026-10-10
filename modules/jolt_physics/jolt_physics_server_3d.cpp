@@ -1373,7 +1373,7 @@ float JoltPhysicsServer3D::pin_joint_get_applied_force(RID p_joint) const {
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
 
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_PIN, 0.0);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_PIN, 0.0);
 	JoltPinJoint3D *pin_joint = static_cast<JoltPinJoint3D *>(joint);
 
 	return pin_joint->get_applied_force();
@@ -1445,7 +1445,7 @@ float JoltPhysicsServer3D::hinge_joint_get_applied_force(RID p_joint) const {
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
 
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_HINGE, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_HINGE, 0.0f);
 	JoltHingeJoint3D *hinge_joint = static_cast<JoltHingeJoint3D *>(joint);
 
 	return hinge_joint->get_applied_force();
@@ -1455,7 +1455,7 @@ float JoltPhysicsServer3D::hinge_joint_get_applied_torque(RID p_joint) const {
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
 
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_HINGE, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_HINGE, 0.0f);
 	JoltHingeJoint3D *hinge_joint = static_cast<JoltHingeJoint3D *>(joint);
 
 	return hinge_joint->get_applied_torque();
@@ -1503,7 +1503,7 @@ float JoltPhysicsServer3D::slider_joint_get_applied_force(RID p_joint) const {
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
 
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_SLIDER, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_SLIDER, 0.0f);
 	JoltSliderJoint3D *slider_joint = static_cast<JoltSliderJoint3D *>(joint);
 
 	return slider_joint->get_applied_force();
@@ -1513,7 +1513,7 @@ float JoltPhysicsServer3D::slider_joint_get_applied_torque(RID p_joint) const {
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
 
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_SLIDER, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_SLIDER, 0.0f);
 	JoltSliderJoint3D *slider_joint = static_cast<JoltSliderJoint3D *>(joint);
 
 	return slider_joint->get_applied_torque();
@@ -1561,7 +1561,7 @@ float JoltPhysicsServer3D::cone_twist_joint_get_applied_force(RID p_joint) const
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
 
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_CONE_TWIST, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_CONE_TWIST, 0.0f);
 	JoltConeTwistJoint3D *cone_twist_joint = static_cast<JoltConeTwistJoint3D *>(joint);
 
 	return cone_twist_joint->get_applied_force();
@@ -1571,7 +1571,7 @@ float JoltPhysicsServer3D::cone_twist_joint_get_applied_torque(RID p_joint) cons
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0f);
 
-	ERR_FAIL_COND_V(joint->get_type() != PS3DE::JOINT_TYPE_CONE_TWIST, 0.0f);
+	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_CONE_TWIST, 0.0f);
 	JoltConeTwistJoint3D *cone_twist_joint = static_cast<JoltConeTwistJoint3D *>(joint);
 
 	return cone_twist_joint->get_applied_torque();
@@ -1633,16 +1633,6 @@ bool JoltPhysicsServer3D::generic_6dof_joint_get_flag(RID p_joint, Vector3::Axis
 	const JoltGeneric6DOFJoint3D *g6dof_joint = static_cast<const JoltGeneric6DOFJoint3D *>(joint);
 
 	return g6dof_joint->get_flag(p_axis, p_flag);
-}
-
-PhysicsServer3D::JointType JoltPhysicsServer3D::joint_get_type(RID p_joint) const {
-	const JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, Quaternion());
-
-	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_6DOF, Quaternion());
-	const JoltGeneric6DOFJoint3D *g6dof_joint = static_cast<const JoltGeneric6DOFJoint3D *>(joint);
-
-	return g6dof_joint->get_angular_target_rotation();
 }
 
 float JoltPhysicsServer3D::generic_6dof_joint_get_applied_force(RID p_joint) const {
@@ -1918,16 +1908,6 @@ void JoltPhysicsServer3D::joint_set_solver_position_iterations(RID p_joint, int 
 	return joint->set_solver_position_iterations(p_value);
 }
 
-float JoltPhysicsServer3D::pin_joint_get_applied_force(RID p_joint) const {
-	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, 0.0f);
-
-	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_PIN, 0.0);
-	JoltPinJoint3D *pin_joint = static_cast<JoltPinJoint3D *>(joint);
-
-	return pin_joint->get_applied_force();
-}
-
 double JoltPhysicsServer3D::hinge_joint_get_jolt_param(RID p_joint, HingeJointParamJolt p_param) const {
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0);
@@ -1966,26 +1946,6 @@ void JoltPhysicsServer3D::hinge_joint_set_jolt_flag(RID p_joint, HingeJointFlagJ
 	JoltHingeJoint3D *hinge_joint = static_cast<JoltHingeJoint3D *>(joint);
 
 	return hinge_joint->set_jolt_flag(p_flag, p_enabled);
-}
-
-float JoltPhysicsServer3D::hinge_joint_get_applied_force(RID p_joint) const {
-	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, 0.0f);
-
-	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_HINGE, 0.0f);
-	JoltHingeJoint3D *hinge_joint = static_cast<JoltHingeJoint3D *>(joint);
-
-	return hinge_joint->get_applied_force();
-}
-
-float JoltPhysicsServer3D::hinge_joint_get_applied_torque(RID p_joint) const {
-	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, 0.0f);
-
-	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_HINGE, 0.0f);
-	JoltHingeJoint3D *hinge_joint = static_cast<JoltHingeJoint3D *>(joint);
-
-	return hinge_joint->get_applied_torque();
 }
 
 double JoltPhysicsServer3D::slider_joint_get_jolt_param(RID p_joint, SliderJointParamJolt p_param) const {
@@ -2028,26 +1988,6 @@ void JoltPhysicsServer3D::slider_joint_set_jolt_flag(RID p_joint, SliderJointFla
 	return slider_joint->set_jolt_flag(p_flag, p_enabled);
 }
 
-float JoltPhysicsServer3D::slider_joint_get_applied_force(RID p_joint) const {
-	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, 0.0f);
-
-	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_SLIDER, 0.0f);
-	JoltSliderJoint3D *slider_joint = static_cast<JoltSliderJoint3D *>(joint);
-
-	return slider_joint->get_applied_force();
-}
-
-float JoltPhysicsServer3D::slider_joint_get_applied_torque(RID p_joint) const {
-	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, 0.0f);
-
-	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_SLIDER, 0.0f);
-	JoltSliderJoint3D *slider_joint = static_cast<JoltSliderJoint3D *>(joint);
-
-	return slider_joint->get_applied_torque();
-}
-
 double JoltPhysicsServer3D::cone_twist_joint_get_jolt_param(RID p_joint, ConeTwistJointParamJolt p_param) const {
 	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
 	ERR_FAIL_NULL_V(joint, 0.0);
@@ -2086,26 +2026,6 @@ void JoltPhysicsServer3D::cone_twist_joint_set_jolt_flag(RID p_joint, ConeTwistJ
 	JoltConeTwistJoint3D *cone_twist_joint = static_cast<JoltConeTwistJoint3D *>(joint);
 
 	return cone_twist_joint->set_jolt_flag(p_flag, p_enabled);
-}
-
-float JoltPhysicsServer3D::cone_twist_joint_get_applied_force(RID p_joint) const {
-	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, 0.0f);
-
-	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_CONE_TWIST, 0.0f);
-	JoltConeTwistJoint3D *cone_twist_joint = static_cast<JoltConeTwistJoint3D *>(joint);
-
-	return cone_twist_joint->get_applied_force();
-}
-
-float JoltPhysicsServer3D::cone_twist_joint_get_applied_torque(RID p_joint) const {
-	JoltJoint3D *joint = joint_owner.get_or_null(p_joint);
-	ERR_FAIL_NULL_V(joint, 0.0f);
-
-	ERR_FAIL_COND_V(joint->get_type() != JOINT_TYPE_CONE_TWIST, 0.0f);
-	JoltConeTwistJoint3D *cone_twist_joint = static_cast<JoltConeTwistJoint3D *>(joint);
-
-	return cone_twist_joint->get_applied_torque();
 }
 
 double JoltPhysicsServer3D::generic_6dof_joint_get_jolt_param(RID p_joint, Vector3::Axis p_axis, G6DOFJointAxisParamJolt p_param) const {

@@ -692,12 +692,6 @@
 			<description>
 			</description>
 		</method>
-		<method name="_generic_6dof_joint_get_angular_target_rotation" qualifiers="virtual required const">
-			<return type="Quaternion" />
-			<param index="0" name="joint" type="RID" />
-			<description>
-			</description>
-		</method>
 		<method name="_generic_6dof_joint_get_applied_force" qualifiers="virtual required const">
 			<return type="float" />
 			<param index="0" name="joint" type="RID" />

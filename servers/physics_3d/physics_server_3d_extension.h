@@ -535,9 +535,6 @@ public:
 	EXBIND4(generic_6dof_joint_set_flag, RID, Vector3::Axis, G6DOFJointAxisFlag, bool)
 	EXBIND3RC(bool, generic_6dof_joint_get_flag, RID, Vector3::Axis, G6DOFJointAxisFlag)
 
-	EXBIND2(generic_6dof_joint_set_angular_target_rotation, RID, const Quaternion &)
-	EXBIND1RC(Quaternion, generic_6dof_joint_get_angular_target_rotation, RID)
-
 	EXBIND1RC(float, generic_6dof_joint_get_applied_force, RID)
 	EXBIND1RC(float, generic_6dof_joint_get_applied_torque, RID)
 	EXBIND1RC(Vector3, generic_6dof_joint_get_applied_force_vector, RID)
